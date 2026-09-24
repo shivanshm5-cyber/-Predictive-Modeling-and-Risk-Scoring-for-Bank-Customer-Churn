@@ -30,3 +30,12 @@ Currently working on: Exploratory Data Analysis (EDA)
 - Prepare the data for machine learning
 - Build and test prediction models
 - Build a simple web app to show predictions
+
+## What I Found So Far
+- Number of products is the biggest churn driver — churn is lowest with 2 products (7.6%) but jumps to 82.7% with 3 products and 100% with 4 products
+- Customers in Germany churn twice as much as customers in France or Spain
+- Inactive customers churn nearly twice as much as active customers
+- Older customers churn more than younger customers
+- Female customers churn more than male customers
+- Customers with higher account balances churn slightly more
+- Credit score, tenure, salary, and having a credit card don't seem to affect churn much
