@@ -18,7 +18,12 @@ Churn means a customer leaves the bank. Predicting churn early helps the bank of
 - Streamlit (web app)
 
 ## Status
-Currently working on: Streamlit dashboard (Day 5)
+✅ EDA complete
+✅ Preprocessing and feature engineering complete
+✅ All 4 models trained and compared
+✅ Model explainability (feature importance, SHAP, partial dependence plots) complete
+✅ Streamlit dashboard complete (all 4 modules)
+🚧 Currently writing: research paper and executive summary
 
 ## What I Found So Far
 - Number of products is the biggest churn driver — churn is lowest with 2 products (7.6%) but jumps to 82.7% with 3 products and 100% with 4 products
@@ -58,8 +63,11 @@ Used feature importance and SHAP values to understand what drives predictions. T
 4. Account Balance
 5. Geography (Germany)
 
-## What's Next
-- Finish Streamlit dashboard (churn calculator, probability view, feature importance view, what-if simulator)
-- Write research paper
-- Write executive summary
-- Final submission
+## Streamlit Dashboard
+Built an interactive web app (`app.py`) with 4 modules:
+1. **Churn Risk Calculator** — enter a customer's details and get a churn probability
+2. **Probability Distribution View** — see how one customer compares to the full test set
+3. **Feature Importance Dashboard** — view what drives churn predictions overall
+4. **What-If Scenario Simulator** — adjust engagement and product count live to see how risk changes
+
+To run it locally:
