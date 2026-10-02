@@ -6,6 +6,7 @@ import pandas as pd
 # Load the saved model and scaler
 model = joblib.load('churn_model.pkl')
 scaler = joblib.load('scaler.pkl')
+X_test = joblib.load('X_test.pkl')
 
 st.title("Bank Customer Churn Risk Calculator")
 st.header("Enter Customer Details")
@@ -62,3 +63,20 @@ if st.button("Predict Churn Risk"):
         st.success("✅ Low Risk of Churn")
 
     st.progress(float(churn_probability))
+        # Module 2: Probability Distribution Visualization
+    st.header("How This Compares to Other Customers")
+
+    import matplotlib.pyplot as plt
+
+    # Get churn probabilities for the entire test set
+    all_probabilities = model.predict_proba(X_test)[:, 1]
+
+    fig, ax = plt.subplots()
+    ax.hist(all_probabilities, bins=30, color='skyblue', edgecolor='black')
+    ax.axvline(churn_probability, color='red', linestyle='--', linewidth=2, label='This Customer')
+    ax.set_xlabel('Churn Probability')
+    ax.set_ylabel('Number of Customers')
+    ax.set_title('Where This Customer Falls Among All Test Customers')
+    ax.legend()
+
+    st.pyplot(fig)
