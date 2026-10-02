@@ -7,6 +7,7 @@ import pandas as pd
 model = joblib.load('churn_model.pkl')
 scaler = joblib.load('scaler.pkl')
 X_test = joblib.load('X_test.pkl')
+num_cols = ['CreditScore', 'Age', 'Tenure', 'Balance', 'NumOfProducts', 'EstimatedSalary']
 
 st.title("Bank Customer Churn Risk Calculator")
 st.header("Enter Customer Details")
@@ -80,3 +81,47 @@ if st.button("Predict Churn Risk"):
     ax.legend()
 
     st.pyplot(fig)
+st.header("What Drives Churn? (Feature Importance)")
+
+import pandas as pd
+
+feature_importance = pd.DataFrame({
+    'Feature': model.feature_names_in_,
+    'Importance': model.feature_importances_
+}).sort_values(by='Importance', ascending=False)
+
+st.bar_chart(feature_importance.set_index('Feature'))    
+st.header("What-If Scenario Simulator")
+st.write("See how changing engagement and product count affects churn risk, keeping other details fixed.")
+
+wi_age = st.slider("Age (what-if)", 18, 92, 40, key="wi_age")
+wi_balance = st.number_input("Balance (what-if)", 0.0, 250000.0, 75000.0, key="wi_balance")
+wi_salary = st.number_input("Salary (what-if)", 0.0, 200000.0, 90000.0, key="wi_salary")
+wi_tenure = st.slider("Tenure (what-if)", 0, 10, 5, key="wi_tenure")
+wi_credit = st.slider("Credit Score (what-if)", 300, 850, 650, key="wi_credit")
+
+wi_num_products = st.slider("Number of Products (adjust this)", 1, 4, 2, key="wi_products")
+wi_is_active = st.radio("Active Member? (adjust this)", ["Yes", "No"], key="wi_active")
+
+wi_is_active_val = 1 if wi_is_active == "Yes" else 0
+
+wi_input = pd.DataFrame([[
+    wi_credit, wi_age, wi_tenure, wi_balance, wi_num_products,
+    1, wi_is_active_val, wi_salary, 0, 0, 0
+]], columns=[
+    'CreditScore', 'Age', 'Tenure', 'Balance', 'NumOfProducts',
+    'HasCrCard', 'IsActiveMember', 'EstimatedSalary',
+    'Geography_Germany', 'Geography_Spain', 'Gender_Male'
+])
+
+wi_input[num_cols] = scaler.transform(wi_input[num_cols])
+
+wi_input['Balance_Salary_Ratio'] = wi_input['Balance'] / (wi_input['EstimatedSalary'] + 1)
+wi_input['Engagement_Product'] = wi_input['IsActiveMember'] * wi_input['NumOfProducts']
+wi_input['Age_Tenure'] = wi_input['Age'] * wi_input['Tenure']
+wi_input['Product_Density'] = wi_input['NumOfProducts'] / (wi_input['Tenure'] + 1)
+
+wi_probability = model.predict_proba(wi_input)[0][1]
+
+st.metric("What-If Churn Probability", f"{wi_probability:.1%}")
+st.progress(float(wi_probability))
